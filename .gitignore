@@ -1,0 +1,8 @@
+# .vscode
+.vscode/launch.json
+.vscode/settings.json
+
+# temp files
+.cache/
+bin/
+build/
