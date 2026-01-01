@@ -33,7 +33,7 @@
                 "${workspaceFolder}/src/core/include",
                 "-L",
                 "${workspaceFolder}/bin/",
-                "-lSDL3",
+                // "-lSDL3",
                 "-lgkit",
                 "-std=c++17"
             ]

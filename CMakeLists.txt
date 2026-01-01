@@ -47,22 +47,26 @@ set(CORE_SRC
     ${CORE_UTILS_SRC}
 )
 
-## CABI sources ##
-file(GLOB_RECURSE CABI_APPLICATION_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.cpp
-)
+if (DEFINED ENABLE_C_ABI)
 
-file(GLOB_RECURSE CABI_GRAPHIC_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.cpp
-)
+    ## CABI sources ##
+    file(GLOB_RECURSE CABI_APPLICATION_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.cpp
+    )
+
+    file(GLOB_RECURSE CABI_GRAPHIC_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.cpp
+    )
 
 
-set(CABI_SRC
-    ${CABI_APPLICATION_SRC}
-    ${CABI_GRAPHIC_SRC}
-)
+    set(CABI_SRC
+        ${CABI_APPLICATION_SRC}
+        ${CABI_GRAPHIC_SRC}
+    )
+
+endif() # ENABLE_C_ABI
 
 
 set(GKIT_SRC
@@ -70,6 +74,6 @@ set(GKIT_SRC
     ${CABI_SRC}
 )
 
-add_library(gkit STATIC ${GKIT_SRC})
+add_library(gkit SHARED ${GKIT_SRC})
 
-target_link_libraries(gkit PRIVATE STATIC SDL3::SDL3)
+target_link_libraries(gkit PRIVATE SDL3::SDL3)
