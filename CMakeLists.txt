@@ -76,5 +76,7 @@ set(GKIT_SRC
 )
 
 add_library(gkit SHARED ${GKIT_SRC})
+add_library(gkit_static STATIC ${GKIT_SRC})
 
 target_link_libraries(gkit PRIVATE SDL3::SDL3)
+target_link_libraries(gkit_static PRIVATE SDL3::SDL3)
