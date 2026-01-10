@@ -2,12 +2,12 @@
 
 namespace gkit {
 
-class Application {
-public:
-    explicit Application() noexcept;
-    virtual ~Application() noexcept;
+    class Application {
+    public:
+        explicit Application() noexcept;
+        virtual ~Application() noexcept;
 
 
-}; // class Application
+    }; // class Application
 
 } // namespace gkit

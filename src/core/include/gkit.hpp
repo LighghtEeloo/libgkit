@@ -6,4 +6,4 @@
 
 namespace gkit {
     
-}
+} // namespace gkit
