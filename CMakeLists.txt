@@ -1,82 +1,32 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.40)
 
-project(gkit)
+project(gkit C CXX)
 
-# C++ standard
-set(CXX_STANDARD 20)
-set(CXX_STANDARD_REQUIRED ON)
-set(CXX_EXTENSIONS OFF)
-
-# C standard
-set(C_Standard 11)
-set(C_Standard_REQUIRED ON)
-set(C_EXTENSIONS OFF)
-
-# Project settings
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+include(cmake/common.cmake)
 
 # Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/include/)
 
-# Third party libraries
-find_package(SDL3 REQUIRED)
+# build core
+set (GKIT_OBJS $<TARGET_OBJECTS:gkit_core>)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/core)
 
-## Core sources ##
-file(GLOB_RECURSE CORE_APPLICATION_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/application/*.cpp
-)
-
-file(GLOB_RECURSE CORE_GRAPHIC_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/graphic/*.cpp
-)
-
-file(GLOB_RECURSE CORE_INPUT_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/input/*.cpp
-)
-
-file(GLOB_RECURSE CORE_UTILS_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/utils/*.cpp
-)
-
-set(CORE_SRC
-    ${CORE_APPLICATION_SRC}
-    ${CORE_GRAPHIC_SRC}
-    ${CORE_INPUT_SRC}
-    ${CORE_UTILS_SRC}
-)
-
-if (ENABLE_C_ABI)
-
-    ## CABI sources ##
-    file(GLOB_RECURSE CABI_APPLICATION_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/application/*.cpp
-    )
-
-    file(GLOB_RECURSE CABI_GRAPHIC_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/c_abi/graphic/*.cpp
-    )
-
-
-    set(CABI_SRC
-        ${CABI_APPLICATION_SRC}
-        ${CABI_GRAPHIC_SRC}
-    )
-
+# build c_abi
+if (DEFINED EXPORT_C_ABI AND EXPORT_C_ABI EQUAL true)
+    list (APPEND GKIT_OBJS $<TARGET_OBJECTS:gkit_c_abi>)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/c_abi)
 endif() # ENABLE_C_ABI
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+endif()
 
-set(GKIT_SRC
-    ${CORE_SRC}
-    ${CABI_SRC}
+add_library(${PROJECT_NAME} 
+    ${GKIT_OBJS}
 )
 
-add_library(gkit SHARED ${GKIT_SRC})
-add_library(gkit_static STATIC ${GKIT_SRC})
-
-target_link_libraries(gkit PRIVATE SDL3::SDL3)
-target_link_libraries(gkit_static PRIVATE SDL3::SDL3)
+add_library(${PROJECT_NAME}_static STATIC 
+    ${GKIT_OBJS}
+)
